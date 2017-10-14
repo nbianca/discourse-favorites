@@ -1,0 +1,23 @@
+en:
+  js:
+    favorites:
+      category: 'Favorites'
+      preferences:
+        select_favorites: 'Favorite categories'
+        select_favorites_instructions: 'Select all categories that you like the most to make them more accessible.'
+    filters:
+      favorites:
+        latest:
+          title: "Latest favorites"
+          help: "latest topics from your favorite categories"
+        new:
+          title: "New favorites"
+          help: "new topics from your favorite categories"
+        unread:
+          title: "Unread favorites"
+          help: "unread topics from your favorite categories"
+    topics:
+      none:
+        favorites: 'You have no favorite topics.'
+      bottom:
+        favorites: 'There are no more favorite topics.'
