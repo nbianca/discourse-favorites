@@ -1,7 +1,8 @@
 import buildTopicRoute from 'discourse/routes/build-topic-route';
+import CategoryDropComponent from 'select-kit/components/category-drop';
 import DiscoverySortableController from 'discourse/controllers/discovery-sortable';
 import { customNavItemHref } from 'discourse/models/nav-item';
-import { addExtraDropItem, selectedDropItem } from 'discourse/components/category-drop';
+import { default as computed } from 'ember-addons/ember-computed-decorators';
 
 function buildFavoriteRoute(filter) {
   return buildTopicRoute('favorites/' + filter, {
@@ -37,24 +38,34 @@ export default {
     });
 
     /**
-     * Definition of the extra cateogry that will be shown in the category drop.
-     */
-    const favoritesExtraCategory = {
-      href: '/favorites/',
-      label: I18n.t('favorites.category'),
-      icon: 'star',
-      id: 'favorites',
-    };
-
-    /**
      * Add "Favorites" category.
      */
-    addExtraDropItem(favoritesExtraCategory);
-    selectedDropItem(function(items) {
-      if (container.lookup('router:main').get('currentURL').startsWith('/favorites/')) {
-        return favoritesExtraCategory;
+    CategoryDropComponent.reopen({
+
+      @computed("allCategoriesUrl", "allCategoriesLabel", "noCategoriesUrl", "noCategoriesLabel")
+      collectionHeader(allCategoriesUrl, allCategoriesLabel, noCategoriesUrl, noCategoriesLabel) {
+        let ret = this._super(allCategoriesUrl, allCategoriesLabel, noCategoriesUrl, noCategoriesLabel);
+        if (!this.get("subCategory")) {
+          ret += `
+            <a href="/favorites/" class="category-filter">
+              <i class="fa fa-star"></i> ${I18n.t('favorites.category')}
+            </a>
+          `.htmlSafe();
+        }
+        return ret;
+      },
+
+      computeHeaderContent() {
+        if (!this.get("subCategory")) {
+          if (Discourse.__container__.lookup('router:main').get('currentURL').startsWith('/favorites/')) {
+            let content = this.baseHeaderComputedContent();
+            content.label = '<i class="fa fa-star"></i> ' + I18n.t('favorites.category');
+            return content;
+          }
+        }
+
+        return this._super();
       }
-      return null;
     });
 
     /**
