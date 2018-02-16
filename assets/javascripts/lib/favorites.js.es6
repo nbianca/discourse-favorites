@@ -62,7 +62,7 @@ export default {
   _getFavorites() {
 
     // If favorites are already loaded fire waiting callbacks.
-    if (this.state == LOADED) {
+    if (this.state === LOADED) {
       this._fireCallbacks();
     }
 

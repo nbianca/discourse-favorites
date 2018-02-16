@@ -1,6 +1,7 @@
 import buildTopicRoute from 'discourse/routes/build-topic-route';
 import CategoryDropComponent from 'select-kit/components/category-drop';
 import DiscoverySortableController from 'discourse/controllers/discovery-sortable';
+import favorites from 'discourse/plugins/discourse-favorites/lib/favorites';
 import { customNavItemHref } from 'discourse/models/nav-item';
 import { default as computed } from 'ember-addons/ember-computed-decorators';
 
@@ -26,6 +27,11 @@ export default {
     }
 
     /**
+     * Fetch user's favorites.
+     */
+    favorites._getFavorites();
+
+    /**
      * Create controllers for favorites.
      */
     Discourse[`DiscoveryFavoritesController`] = DiscoverySortableController.extend();
@@ -45,7 +51,7 @@ export default {
       @computed("allCategoriesUrl", "allCategoriesLabel", "noCategoriesUrl", "noCategoriesLabel")
       collectionHeader(allCategoriesUrl, allCategoriesLabel, noCategoriesUrl, noCategoriesLabel) {
         let ret = this._super(allCategoriesUrl, allCategoriesLabel, noCategoriesUrl, noCategoriesLabel);
-        if (!this.get("subCategory")) {
+        if (!this.get("subCategory") && favorites.favorites.size > 0) {
           ret += `
             <a href="/favorites/" class="category-filter">
               <i class="fa fa-star"></i> ${I18n.t('favorites.category')}
